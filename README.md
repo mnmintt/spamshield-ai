@@ -42,6 +42,7 @@ http://localhost:8501
 | 📊 Data Explorer | Browse and search the full training dataset with filters |
 | 📈 Visualizations | Word clouds, top word frequency, confusion matrix, and model comparison charts |
 | 🤖 Model Info | Full breakdown of NLP pipeline, model metrics, and feature extraction methods |
+| 🕓 History | View all analyzed messages in the session with filters and CSV export |
 
 ## 📁 Project Structure
 
