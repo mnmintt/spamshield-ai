@@ -401,6 +401,7 @@ with st.sidebar:
         "📊 Data Explorer",
         "📈 Visualizations",
         "🤖 Model Info",
+        "🕓 History"
     ], label_visibility="collapsed")
 
     st.markdown("---")
@@ -914,4 +915,79 @@ elif page == "🤖 Model Info":
         with st.expander("Word2Vec"):
             st.write("Neural word embeddings that capture semantic meaning. Each message is represented as the average of its 100-dimension word vectors. Vocabulary: 7,807 words.")
             
-            
+# ══════════════════════════════════════════════════════════
+# PAGE 9 — HISTORY
+# ══════════════════════════════════════════════════════════
+elif page == "🕓 History":
+    st.markdown('<div class="hero-banner"><p class="hero-title" style="font-size:2rem">🕓 Session History</p><p class="hero-subtitle">All messages analyzed in this session</p></div>', unsafe_allow_html=True)
+
+    if not st.session_state.history:
+        st.markdown("""
+        <div style="background:#111827; border:1px dashed #1e3a5f; border-radius:16px; padding:60px; text-align:center; color:#475569">
+            <div style="font-size:3rem; margin-bottom:12px">📭</div>
+            <div style="font-size:1rem">No analysis history yet.<br>Start by analyzing a message in <strong style="color:#60a5fa">Text Analyzer</strong>.</div>
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        total = len(st.session_state.history)
+        spam_count = sum(1 for h in st.session_state.history if h['result'] == 'SPAM')
+        ham_count = total - spam_count
+
+        col1, col2, col3, col4 = st.columns(4)
+        with col1: st.metric("Total Analyzed", total)
+        with col2: st.metric("🚨 Spam Found", spam_count)
+        with col3: st.metric("✅ Safe Found", ham_count)
+        with col4:
+            rate = f"{(spam_count/total*100):.1f}%" if total > 0 else "—"
+            st.metric("Spam Rate", rate)
+
+        st.markdown("---")
+
+        # Filter options
+        col1, col2 = st.columns([2, 1])
+        with col1:
+            filter_result = st.selectbox("Filter by result:", ["All", "Spam only", "Ham only"])
+        with col2:
+            filter_source = st.selectbox("Filter by source:", ["All", "Text", "File", "Image", "Batch"])
+
+        filtered = st.session_state.history.copy()
+        if filter_result == "Spam only":
+            filtered = [h for h in filtered if h['result'] == 'SPAM']
+        elif filter_result == "Ham only":
+            filtered = [h for h in filtered if h['result'] == 'HAM']
+        if filter_source != "All":
+            filtered = [h for h in filtered if h['source'] == filter_source]
+
+        st.caption(f"Showing {len(filtered)} of {total} records")
+        st.markdown("---")
+
+        # Display history
+        for i, item in enumerate(reversed(filtered)):
+            css = "history-item" if item['result'] == 'SPAM' else "history-item ham"
+            icon = "🚨" if item['result'] == 'SPAM' else "✅"
+            st.markdown(f"""
+            <div class="{css}">
+                <div class="history-msg">{icon} <strong>{item['result']}</strong> — {item['message']}</div>
+                <div class="history-meta">
+                    Confidence: {item['confidence']} &nbsp;·&nbsp;
+                    Trigger words: {item['keywords']} &nbsp;·&nbsp;
+                    Source: {item['source']} &nbsp;·&nbsp;
+                    #{total - i}
+                </div>
+            </div>""", unsafe_allow_html=True)
+
+        st.markdown("---")
+
+        # Export history
+        export_df = pd.DataFrame(st.session_state.history)
+        st.download_button(
+            "📥 Download History as CSV",
+            export_df.to_csv(index=False),
+            "analysis_history.csv",
+            "text/csv",
+            use_container_width=True
+        )
+
+        if st.button("🗑️ Clear All History", use_container_width=True):
+            st.session_state.history = []
+            st.rerun()          
