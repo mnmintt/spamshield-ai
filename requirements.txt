@@ -8,3 +8,4 @@ seaborn
 wordcloud
 PyPDF2
 python-docx
+easyocr
