@@ -8,7 +8,8 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
-
+from PIL import Image
+import easyocr
 
 # Download NLTK resources
 nltk.download('stopwords', quiet=True)
@@ -396,9 +397,10 @@ with st.sidebar:
         "🔍 Text Analyzer",
         "📄 File Scanner",
         "📂 Batch Prediction",
+        "🖼️ Image Scanner",
         "📊 Data Explorer",
         "📈 Visualizations",
-        "🤖 Model Info"
+        "🤖 Model Info",
     ], label_visibility="collapsed")
 
     st.markdown("---")
@@ -687,9 +689,50 @@ elif page == "📂 Batch Prediction":
                                        "spam_results.csv", "text/csv")
         except Exception as e:
             st.error(f"Error reading file: {e}")
+            
+# ══════════════════════════════════════════════════════════
+# PAGE 5 — Image Scanner
+# ══════════════════════════════════════════════════════════
+            
+elif page == "🖼️ Image Scanner":
+    st.markdown('<div class="hero-banner"><p class="hero-title" style="font-size:2rem">🖼️ Image Scanner</p><p class="hero-subtitle">Upload an image containing text to scan for spam</p></div>', unsafe_allow_html=True)
+
+    uploaded_image = st.file_uploader("Upload image:", type=['png', 'jpg', 'jpeg'])
+
+    if uploaded_image:
+        from PIL import Image
+        import easyocr
+        import numpy as np
+
+        image = Image.open(uploaded_image)
+        st.image(image, caption="Uploaded Image", use_column_width=True)
+
+        if st.button("🔍 Extract Text & Scan", use_container_width=True):
+            with st.spinner("Reading text from image..."):
+                reader = easyocr.Reader(['en'], gpu=False)
+                img_array = np.array(image)
+                results = reader.readtext(img_array, detail=0)
+                extracted_text = ' '.join(results)
+
+            if not extracted_text.strip():
+                st.error("Could not extract any text from this image.")
+            else:
+                st.success(f"✅ Extracted {len(extracted_text)} characters")
+                st.text_area("Extracted Text:", value=extracted_text, height=150, disabled=True)
+
+                prediction, confidence, cleaned, found_keywords = run_prediction(extracted_text, model)
+                render_result_box(prediction, confidence, found_keywords, source_label=f"Image: {uploaded_image.name} · ")
+
+                st.session_state.history.append({
+                    'message': f"[IMAGE] {uploaded_image.name}",
+                    'result': 'SPAM' if prediction == 1 else 'HAM',
+                    'confidence': f"{confidence:.1%}",
+                    'keywords': len(found_keywords),
+                    'source': 'Image'
+                })
 
 # ══════════════════════════════════════════════════════════
-# PAGE 5 — DATA EXPLORER
+# PAGE 6 — DATA EXPLORER
 # ══════════════════════════════════════════════════════════
 elif page == "📊 Data Explorer":
     st.markdown('<div class="hero-banner"><p class="hero-title" style="font-size:2rem">📊 Data Explorer</p><p class="hero-subtitle">Explore the training dataset</p></div>', unsafe_allow_html=True)
@@ -733,7 +776,7 @@ elif page == "📊 Data Explorer":
         st.write(df[df['label']=='ham']['text'].str.len().describe().round(1))
 
 # ══════════════════════════════════════════════════════════
-# PAGE 6 — VISUALIZATIONS
+# PAGE 7 — VISUALIZATIONS
 # ══════════════════════════════════════════════════════════
 elif page == "📈 Visualizations":
     import matplotlib.pyplot as plt
@@ -819,7 +862,7 @@ elif page == "📈 Visualizations":
             st.info("model_comparison_chart.png not found in data/ folder.")
 
 # ══════════════════════════════════════════════════════════
-# PAGE 7 — MODEL INFO
+# PAGE 8 — MODEL INFO
 # ══════════════════════════════════════════════════════════
 elif page == "🤖 Model Info":
     st.markdown('<div class="hero-banner"><p class="hero-title" style="font-size:2rem">🤖 Model Info</p><p class="hero-subtitle">Technical details about our NLP pipeline and models</p></div>', unsafe_allow_html=True)
@@ -870,3 +913,5 @@ elif page == "🤖 Model Info":
     with col2:
         with st.expander("Word2Vec"):
             st.write("Neural word embeddings that capture semantic meaning. Each message is represented as the average of its 100-dimension word vectors. Vocabulary: 7,807 words.")
+            
+            
