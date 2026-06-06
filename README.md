@@ -12,7 +12,7 @@ An intelligent spam detection web application built with NLP and Machine Learnin
 
 **1. Clone the repository**
 ```
-git clone https://github.com/yourusername/spamshield-ai.git
+git clone https://github.com/mnmintt/spamshield-ai.git
 cd spamshield-ai
 ```
 
