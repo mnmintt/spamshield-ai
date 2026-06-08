@@ -36,7 +36,6 @@ http://localhost:8501
 | Feature | Description |
 |---------|-------------|
 | 🔍 Text Analyzer | Paste any message and get instant spam prediction with confidence score and keyword highlights |
-| 📄 File Scanner | Upload .txt, .pdf, or .docx files and scan their content for spam |
 | 📂 Batch Prediction | Upload a CSV with multiple messages and analyze them all at once with downloadable results |
 | 📄 File Scanner | Upload .txt, .pdf, or .docx files and scan their content for spam |
 | 📊 Data Explorer | Browse and search the full training dataset with filters |
