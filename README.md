@@ -36,8 +36,8 @@ http://localhost:8501
 | Feature | Description |
 |---------|-------------|
 | 🔍 Text Analyzer | Paste any message and get instant spam prediction with confidence score and keyword highlights |
-| 📂 Batch Prediction | Upload a CSV with multiple messages and analyze them all at once with downloadable results |
-| 📄 File Scanner | Upload .txt, .pdf, or .docx files and scan their content for spam |
+| 📄 File Scanner | Upload .txt, .pdf, or .docx files and scan their content for spam 
+| 📂 Batch Prediction | Upload a CSV with multiple messages and analyze them all at once with downloadable results ||
 | 📊 Data Explorer | Browse and search the full training dataset with filters |
 | 📈 Visualizations | Word clouds, top word frequency, confusion matrix, and model comparison charts |
 | 🤖 Model Info | Full breakdown of NLP pipeline, model metrics, and feature extraction methods |
