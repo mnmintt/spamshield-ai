@@ -39,6 +39,7 @@ http://localhost:8501
 | 📄 File Scanner | Upload .txt, .pdf, or .docx files and scan their content for spam 
 | 📂 Batch Prediction | Upload a CSV with multiple messages and analyze them all at once with downloadable results ||
 | 📊 Data Explorer | Browse and search the full training dataset with filters |
+| 🖼️ Image Scanner | Upload an image (PNG, JPG) containing text and scan it for spam using OCR |
 | 📈 Visualizations | Word clouds, top word frequency, confusion matrix, and model comparison charts |
 | 🤖 Model Info | Full breakdown of NLP pipeline, model metrics, and feature extraction methods |
 | 🕓 History | View all analyzed messages in the session with filters and CSV export |
