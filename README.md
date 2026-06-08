@@ -92,4 +92,4 @@ spamshield-ai/
 
 ## 🌐 Live Demo
 
-Deployed on Streamlit Cloud: (https://spamshield-ai-umseqzr7myjbprkdapyvgd.streamlit.app/)
+Deployed on Streamlit Cloud: (https://spamshield-ai-umseqzr7myjbprkdapyvgd.streamlit.app)
