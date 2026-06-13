@@ -3,10 +3,10 @@
 An intelligent spam detection web application built with NLP and Machine Learning. Detects spam in typed messages, uploaded files (PDF, DOCX, TXT), and bulk CSV uploads.
 
 ## 👥 Team Members
-- Member 1 — Data & NLP Pipeline
-- Member 2 — Model Training & Evaluation
-- Member 3 — Muhammad Iskandar Zulkarnain
-- Member 4 — Tey Yu Yang
+- Chan Zi Chao                 — Data & NLP Pipeline
+- Muhammad Ilham               — Model Training & Evaluation
+- Muhammad Iskandar Zulkarnain — Streamlit Application
+- Tey Yu Yang                  — Visualizations & Documentation
 
 ## 🚀 How to Run Locally
 
