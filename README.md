@@ -5,8 +5,8 @@ An intelligent spam detection web application built with NLP and Machine Learnin
 ## 👥 Team Members
 - Member 1 — Data & NLP Pipeline
 - Member 2 — Model Training & Evaluation
-- Member 3 — Streamlit Application
-- Member 4 — Visualizations & Documentation
+- Member 3 — Muhammad Iskandar Zulkarnain
+- Member 4 — Tey Yu Yang
 
 ## 🚀 How to Run Locally
 
