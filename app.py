@@ -687,10 +687,10 @@ if page == "Home":
         st.markdown("### Team Members")
         st.markdown("""
         <div class="feature-card" style="text-align:left">
-            <div style="margin-bottom:12px; color:#cccccc"><strong style="color:#ffffff">Member 1</strong> — Data & NLP Pipeline</div>
-            <div style="margin-bottom:12px; color:#cccccc"><strong style="color:#ffffff">Member 2</strong> — Model Training & Evaluation</div>
-            <div style="margin-bottom:12px; color:#cccccc"><strong style="color:#ffffff">Member 3</strong> — Streamlit Application</div>
-            <div style="color:#cccccc"><strong style="color:#ffffff">Member 4</strong> — Visualizations & Documentation</div>
+            <div style="margin-bottom:12px; color:#cccccc"><strong style="color:#ffffff">Chan Zi Chao</strong> — Data & NLP Pipeline</div>
+            <div style="margin-bottom:12px; color:#cccccc"><strong style="color:#ffffff">Muhammad Ilham</strong> — Model Training & Evaluation</div>
+            <div style="margin-bottom:12px; color:#cccccc"><strong style="color:#ffffff">Muhammad Iskandar Zulkarnain</strong> — Streamlit Application</div>
+            <div style="color:#cccccc"><strong style="color:#ffffff">Tey Yu Yang</strong> — Visualizations & Documentation</div>
         </div>
         """, unsafe_allow_html=True)
 
