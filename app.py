@@ -79,12 +79,13 @@ st.markdown("""
         margin-bottom: 24px;
     }
     .hero-title {
-        font-size: 3rem;
-        font-weight: 700;
-        color: #ffffff;
-        margin: 0 0 8px 0;
-        letter-spacing: -2px;
-        font-family: 'IBM Plex Mono', monospace;
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 8px 0;
+    letter-spacing: -1px;
+    line-height: 1.3;
+    font-family: 'IBM Plex Mono', monospace;
     }
     .hero-subtitle {
         color: #888888;
@@ -651,22 +652,25 @@ if page == "Home":
 
     st.markdown("---")
     st.markdown("### What You Can Do")
-    c1, c2, c3, c4 = st.columns(4)
+    c1, c2, c3 = st.columns(3)
+    c4, c5, c6 = st.columns(3)
     features = [
         ("[ TEXT ]", "Text Analyzer", "Type or paste any message and get instant spam detection with confidence score"),
         ("[ FILE ]", "File Scanner", "Upload a .txt, .pdf or .docx file and scan its content for spam"),
+        ("[ IMAGE ]", "Image Scanner", "Upload an image containing text and extract it via OCR for spam scanning"),
         ("[ BATCH ]", "Batch Prediction", "Upload a CSV with multiple messages and analyze them all at once"),
         ("[ DATA ]", "Visualizations", "Explore word clouds, model comparisons, and dataset insights"),
+        ("[ LOG ]", "History", "Review and export every message analyzed during this session"),
     ]
-    for col, (icon, title, desc) in zip([c1, c2, c3, c4], features):
+    for col, (icon, title, desc) in zip([c1, c2, c3, c4, c5, c6], features):
         with col:
             st.markdown(f"""
-            <div class="feature-card">
+            <div class="feature-card" style="margin-bottom:16px">
                 <div class="feature-icon">{icon}</div>
                 <div class="feature-title">{title}</div>
                 <div class="feature-desc">{desc}</div>
             </div>""", unsafe_allow_html=True)
-
+            
     st.markdown("---")
     col1, col2 = st.columns(2)
     with col1:
