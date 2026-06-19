@@ -1,14 +1,14 @@
-# 🛡️ SpamShield AI — Email & SMS Spam Detector
+# SpamShield AI — Email & SMS Spam Detector
 
 An intelligent spam detection web application built with NLP and Machine Learning. Detects spam in typed messages, uploaded files (PDF, DOCX, TXT), and bulk CSV uploads.
 
-## 👥 Team Members
+## Team Members
 - Chan Zi Chao                 — **Data & NLP Pipeline**
 - Muhammad Ilham               — **Model Training & Evaluation**
 - Muhammad Iskandar Zulkarnain — **Streamlit Application**
 - Tey Yu Yang                  — **Visualizations & Documentation**
 
-## 🚀 How to Run Locally
+## How to Run Locally
 
 **1. Clone the repository**
 ```
@@ -31,7 +31,7 @@ streamlit run app.py
 http://localhost:8501
 ```
 
-## ✨ Features
+## Features
 
 | Feature | Description |
 |---------|-------------|
@@ -44,7 +44,7 @@ http://localhost:8501
 | 🤖 Model Info | Full breakdown of NLP pipeline, model metrics, and feature extraction methods |
 | 🕓 History | View all analyzed messages in the session with filters and CSV export |
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 spamshield-ai/
@@ -65,7 +65,7 @@ spamshield-ai/
     └── NLP_Project.ipynb         # Full pipeline notebook
 ```
 
-## 📊 Model Performance
+## Model Performance
 
 | Model | Accuracy | Precision | Recall | F1-Score |
 |-------|----------|-----------|--------|----------|
@@ -73,7 +73,7 @@ spamshield-ai/
 | **SVM (TF-IDF) ⭐ Best** | **98.3%** | **99.2%** | **87.9%** | **93.2%** |
 | SVM (Word2Vec) | 94.6% | 96.3% | 69.1% | 77.4% |
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Category | Libraries |
 |----------|-----------|
@@ -84,13 +84,13 @@ spamshield-ai/
 | Visualization | Matplotlib, Seaborn, WordCloud |
 | File Reading | PyPDF2, python-docx, EasyOCR |
 
-## 📦 Dataset
+## Dataset
 
 - **Name:** SMS Spam Collection Dataset
 - **Source:** Kaggle
 - **Size:** 5,572 messages (4,825 ham, 747 spam)
 - **Features:** Raw text message + label (spam/ham)
 
-## 🌐 Live Demo
+## Live Demo
 
 Deployed on Streamlit Cloud: (https://spamshield-ai-umseqzr7myjbprkdapyvgd.streamlit.app)
