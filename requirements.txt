@@ -9,3 +9,5 @@ wordcloud
 PyPDF2
 python-docx
 easyocr
+transformers
+torch
