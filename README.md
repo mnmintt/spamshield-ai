@@ -6,8 +6,8 @@ An intelligent spam detection web application built with NLP and Machine Learnin
 
 | Name | Role |
 |------|------|
-| Chan Zi Chao | Data & NLP Pipeline |
-| Muhammad Ilham | Model Training & Evaluation |
+| Muhammad Ilham | Data & NLP Pipeline |
+| Chan Zi Chao | Model Training & Evaluation |
 | Muhammad Iskandar Zulkarnain | Streamlit Application |
 | Tey Yu Yang | Visualizations & Documentation |
 
