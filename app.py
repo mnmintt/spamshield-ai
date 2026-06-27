@@ -806,7 +806,7 @@ if page == "Home":
         st.markdown("""
         <div class="info-card">
             <div style='font-size:0.875rem;color:#e2e4ee;font-weight:600;margin-bottom:10px'>Muhammad Ilham <span style='color:#4a5068;font-weight:400'>— Data & NLP Pipeline</span></div>
-            <div style='font-size:0.875rem;color:#e2e4ee;font-weight:600;margin-bottom:10px'>Chan Zi Chao <span style='color:#4a5068;font-weight:400'>— Model Training & Evaluation</span></div>
+            <div style='font-size:0.875rem;color:#e2e4ee;font-weight:600;margin-bottom:10px'>Chan Zhi Chao <span style='color:#4a5068;font-weight:400'>— Model Training & Evaluation</span></div>
             <div style='font-size:0.875rem;color:#e2e4ee;font-weight:600;margin-bottom:10px'>Muhammad Iskandar Zulkarnain <span style='color:#4a5068;font-weight:400'>— Streamlit Application</span></div>
             <div style='font-size:0.875rem;color:#e2e4ee;font-weight:600'>Tey Yu Yang <span style='color:#4a5068;font-weight:400'>— Visualizations & Documentation</span></div>
         </div>""", unsafe_allow_html=True)
