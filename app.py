@@ -603,7 +603,7 @@ SPAM_KEYWORDS = [
     'offer', 'congratulation', 'cash', 'discount', 'deal', 'limited',
     'call', 'text', 'reply', 'mobile', 'money', 'credit', 'loan',
     'guarantee', 'selected', 'reward', 'bonus', 'exclusive', 'expire',
-    'subscribe', 'cancel', 'verify', 'password', 'account', 'bank'
+    'subscribe', 'cancel', 'verify', 'password', 'account', 'bank', 'pay'
 ]
 
 def bert_label_to_prediction(label):
