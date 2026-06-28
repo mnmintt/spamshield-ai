@@ -603,7 +603,7 @@ SPAM_KEYWORDS = [
     'offer', 'congratulation', 'cash', 'discount', 'deal', 'limited',
     'call', 'text', 'reply', 'mobile', 'money', 'credit', 'loan',
     'guarantee', 'selected', 'reward', 'bonus', 'exclusive', 'expire',
-    'subscribe', 'cancel', 'verify', 'password', 'account', 'bank', 'pay','fine'
+    'subscribe', 'cancel', 'verify', 'password', 'account', 'bank'
 ]
 
 def bert_label_to_prediction(label):
@@ -712,6 +712,78 @@ def render_result(prediction, confidence, found_keywords, source_label=""):
         st.markdown('<p class="sec-label" style="margin-top:14px">Trigger Words</p>', unsafe_allow_html=True)
         badges = "".join([f'<span class="kw-badge">{w}</span>' for w in found_keywords])
         st.markdown(badges, unsafe_allow_html=True)
+
+
+# ── Reusable LIME XAI explanation block
+def render_lime_explanation(cleaned_text, model, vectorizer, expander_key=""):
+    """
+    Renders a LIME XAI expander block for SVM model.
+    Call this after render_result() when model is NOT DistilBERT.
+    cleaned_text: preprocessed text string
+    expander_key: optional unique key string for the expander label
+    """
+    label = f"Why did the model make this decision? (XAI){' — ' + expander_key if expander_key else ''}"
+    with st.expander(label):
+        try:
+            import lime
+            from lime.lime_text import LimeTextExplainer
+            import matplotlib.pyplot as plt
+            import matplotlib
+            matplotlib.use('Agg')
+
+            with st.spinner("Generating explanation..."):
+                def predict_proba(texts):
+                    vectorized = vectorizer.transform(texts)
+                    scores = model.decision_function(vectorized)
+                    probs = 1 / (1 + np.exp(-scores))
+                    return np.column_stack([1 - probs, probs])
+
+                explainer = LimeTextExplainer(
+                    class_names=['Safe', 'Spam'],
+                    split_expression=r'\s+'
+                )
+
+                exp = explainer.explain_instance(
+                    cleaned_text,
+                    predict_proba,
+                    num_features=10,
+                    num_samples=500
+                )
+
+                word_weights = exp.as_list()
+
+                if word_weights:
+                    words = [w[0] for w in word_weights]
+                    weights = [w[1] for w in word_weights]
+                    colors = ['#ef4444' if w > 0 else '#22c55e' for w in weights]
+
+                    fig, ax = plt.subplots(figsize=(8, 4), facecolor='#12121f')
+                    ax.set_facecolor('#12121f')
+                    ax.barh(words, weights, color=colors, edgecolor='none')
+                    ax.set_title('Word Contributions to Spam Detection',
+                                color='#e2e4ee', fontsize=11, fontweight='600', pad=12)
+                    ax.set_xlabel('Contribution (positive = spam, negative = safe)',
+                                color='#4a5068', fontsize=9)
+                    ax.tick_params(colors='#aaaaaa', labelsize=9)
+                    ax.axvline(x=0, color='#4a5068', linewidth=0.8, linestyle='--')
+                    for spine in ax.spines.values():
+                        spine.set_color('#1e1e35')
+                    st.pyplot(fig)
+                    plt.close()
+
+                    st.markdown("""
+                    <p style='font-size:0.78rem;color:#4a5068;margin-top:8px'>
+                    Red bars = words that pushed the model towards <strong style='color:#ef4444'>Spam</strong>.
+                    Green bars = words that pushed towards <strong style='color:#22c55e'>Safe</strong>.
+                    Longer bars mean stronger influence on the decision.
+                    </p>
+                    """, unsafe_allow_html=True)
+                else:
+                    st.info("Not enough words to generate an explanation.")
+
+        except Exception as e:
+            st.warning(f"Could not generate explanation: {e}")
+
 
 # ── Sidebar
 with st.sidebar:
@@ -862,6 +934,11 @@ elif page == "Text Analyzer":
                 with st.expander("Preprocessing Details"):
                     st.markdown("**After cleaning:**")
                     st.code(cleaned, language=None)
+
+                # LIME explanation — only for SVM model
+                if model_choice != "DistilBERT Transformer":
+                    render_lime_explanation(cleaned, model, vectorizer)
+
                 st.session_state.history.append({
                     'message': user_input[:55] + ('...' if len(user_input) > 55 else ''),
                     'result': 'SPAM' if prediction == 1 else 'SAFE',
@@ -869,8 +946,7 @@ elif page == "Text Analyzer":
                     'keywords': len(found_keywords),
                     'source': 'Text',
                     'model': model_choice,
-                    
-            })
+                })
         else:
             st.markdown("""
             <div style="background:#0d0d18;border:1.5px dashed #1e1e35;border-radius:12px;padding:44px;text-align:center">
@@ -890,7 +966,7 @@ elif page == "Text Analyzer":
 
 # ══════════════════════════════════════════════════════════
 # PAGE 3 — FILE SCANNER
-# ════════════════════════════════════
+# ══════════════════════════════════════════════════════════
 elif page == "File Scanner":
     st.markdown("""
     <div class="page-header">
@@ -935,6 +1011,11 @@ elif page == "File Scanner":
                     else:
                         prediction, confidence, cleaned, found_keywords = run_prediction(extracted_text, model)
                     render_result(prediction, confidence, found_keywords, source_label=uploaded_file.name)
+
+                    # ── LIME XAI — File Scanner (SVM only)
+                    if file_model_choice != "DistilBERT Transformer":
+                        render_lime_explanation(cleaned, model, vectorizer, expander_key=uploaded_file.name)
+
                     st.session_state.history.append({
                         'message': f"[FILE] {uploaded_file.name}",
                         'result': 'SPAM' if prediction == 1 else 'SAFE',
@@ -981,11 +1062,15 @@ elif page == "Batch Prediction":
                 if st.button("Analyze all", use_container_width=True):
                     progress = st.progress(0)
                     results = []
+                    # Track first spam and first ham cleaned texts for XAI summary
+                    first_spam_cleaned = None
+                    first_ham_cleaned = None
+
                     for i, msg in enumerate(batch_df['text'].fillna("")):
                         if batch_model_choice == "DistilBERT Transformer":
-                            prediction, conf, _, keywords = run_bert_prediction(str(msg))
+                            prediction, conf, cleaned_msg, keywords = run_bert_prediction(str(msg))
                         else:
-                            prediction, conf, _, keywords = run_prediction(str(msg), model)
+                            prediction, conf, cleaned_msg, keywords = run_prediction(str(msg), model)
                         result_label = 'SPAM' if prediction == 1 else 'SAFE'
                         confidence_label = f"{conf:.1%}"
                         results.append({
@@ -1003,7 +1088,14 @@ elif page == "Batch Prediction":
                             'source': 'Batch',
                             'model': batch_model_choice
                         })
+                        # Capture first spam and ham for XAI
+                        if prediction == 1 and first_spam_cleaned is None:
+                            first_spam_cleaned = cleaned_msg
+                        if prediction == 0 and first_ham_cleaned is None:
+                            first_ham_cleaned = cleaned_msg
+
                         progress.progress((i + 1) / len(batch_df))
+
                     results_df = pd.DataFrame(results)
                     spam_total = sum(1 for r in results if r['Result'] == 'SPAM')
                     c1, c2, c3, c4 = st.columns(4)
@@ -1013,6 +1105,35 @@ elif page == "Batch Prediction":
                     with c4: st.metric("Spam Rate", f"{(spam_total/len(results)*100):.1f}%")
                     st.dataframe(results_df, use_container_width=True)
                     st.download_button("Download results", results_df.to_csv(index=False), "results.csv", "text/csv")
+
+                    # ── LIME XAI — Batch (SVM only): show explanation for first spam and first ham
+                    if batch_model_choice != "DistilBERT Transformer":
+                        st.markdown("---")
+                        st.markdown('<p class="sec-label">XAI Explanations — Representative Samples</p>', unsafe_allow_html=True)
+                        st.markdown("""
+                        <p style='font-size:0.8rem;color:#4a5068;margin-bottom:12px'>
+                        LIME explanations are shown for the <strong style='color:#ef4444'>first detected spam</strong>
+                        and <strong style='color:#22c55e'>first safe message</strong> in your batch,
+                        illustrating what words most influenced the model's decisions.
+                        </p>
+                        """, unsafe_allow_html=True)
+
+                        if first_spam_cleaned:
+                            render_lime_explanation(
+                                first_spam_cleaned, model, vectorizer,
+                                expander_key="First Spam Sample"
+                            )
+                        else:
+                            st.info("No spam messages found in batch — no spam XAI to show.")
+
+                        if first_ham_cleaned:
+                            render_lime_explanation(
+                                first_ham_cleaned, model, vectorizer,
+                                expander_key="First Safe Sample"
+                            )
+                        else:
+                            st.info("No safe messages found in batch — no safe XAI to show.")
+
         except Exception as e:
             st.error(f"Error: {e}")
 
@@ -1051,6 +1172,11 @@ elif page == "Image Scanner":
                 else:
                     prediction, confidence, cleaned, found_keywords = run_prediction(extracted_text, model)
                 render_result(prediction, confidence, found_keywords, source_label=uploaded_image.name)
+
+                # ── LIME XAI — Image Scanner (SVM only)
+                if image_model_choice != "DistilBERT Transformer":
+                    render_lime_explanation(cleaned, model, vectorizer, expander_key=uploaded_image.name)
+
                 st.session_state.history.append({
                     'message': extracted_text[:55] + ('...' if len(extracted_text) > 55 else ''),
                     'result': 'SPAM' if prediction == 1 else 'SAFE',
