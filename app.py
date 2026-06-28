@@ -788,7 +788,7 @@ def render_lime_explanation(cleaned_text, model, vectorizer, expander_key=""):
 # ── Sidebar
 with st.sidebar:
     st.markdown("""
-    <div style='padding:24px 0 0px 0'>
+    <div style='padding:0px 0 20px 0'>
         <div style='font-size:0.6rem;font-weight:700;color:#7c3aed;text-transform:uppercase;letter-spacing:0.15em;margin-bottom:8px'>SpamShield AI</div>
         <div style='font-size:1.2rem;font-weight:800;color:#e2e4ee;letter-spacing:-0.03em;line-height:1.25'>Spam Detection<br>System</div>
         <div style='margin-top:10px;display:inline-block;background:#1a0a3d;border:1px solid #3d1e7a;border-radius:6px;padding:3px 10px'>
